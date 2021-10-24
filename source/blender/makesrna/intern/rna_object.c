@@ -1657,9 +1657,20 @@ static void rna_def_game_object_activity_culling(BlenderRNA *brna)
 	RNA_def_property_boolean_sdna(prop, NULL, "flags", OB_ACTIVITY_PHYSICS);
 	RNA_def_property_ui_text(prop, "Cull Physics", "Suspend physics of this object by its distance to nearest camera");
 
+	prop = RNA_def_property(srna, "sleep_velocity", PROP_BOOLEAN, PROP_NONE);
+	RNA_def_property_boolean_sdna(prop, NULL, "flags", OB_ACTIVITY_PHYSICS_SLEEPVELOCITY);
+	RNA_def_property_boolean_default(prop, true);
+	RNA_def_property_ui_text(prop, "Cull Physics Velocity", "Stop physics after the object stops");
+
 	prop = RNA_def_property(srna, "use_logic", PROP_BOOLEAN, PROP_NONE);
 	RNA_def_property_boolean_sdna(prop, NULL, "flags", OB_ACTIVITY_LOGIC);
 	RNA_def_property_ui_text(prop, "Cull Logic", "Suspend logic and animation of this object by its distance to nearest camera");
+
+	prop = RNA_def_property(srna, "activity_components", PROP_BOOLEAN, PROP_NONE);
+	RNA_def_property_boolean_sdna(prop, NULL, "flags", OB_ACTIVITY_LOGIC_COMPONENTS);
+	RNA_def_property_boolean_default(prop, true);
+	RNA_def_property_ui_text(prop, "Cull Activity Components", "No Suspend execution of object components");
+
 }
 
 static void rna_def_object_game_settings(BlenderRNA *brna)

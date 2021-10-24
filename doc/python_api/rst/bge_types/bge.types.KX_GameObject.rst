@@ -303,10 +303,22 @@ base class --- :class:`SCA_IObject`
       True if the object suspends its physics depending on its nearest distance to any camera.
 
       :type: boolean
+      
+   .. attribute:: physicsCullingVelocity
+
+      Stop physics after the object stops.
+
+      :type: boolean
 
    .. attribute:: logicCulling
 
       True if the object suspends its logic and animation depending on its nearest distance to any camera.
+
+      :type: boolean
+      
+   .. attribute:: logicCullingComponents
+
+      No Suspend execution of object components.
 
       :type: boolean
 

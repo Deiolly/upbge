@@ -92,7 +92,9 @@ public:
 		enum Flag {
 			ACTIVITY_NONE = 0,
 			ACTIVITY_PHYSICS = (1 << 0),
-			ACTIVITY_LOGIC = (1 << 1)
+			ACTIVITY_PHYSICS_SLEEPVELOCITY = (1 << 1),
+			ACTIVITY_LOGIC = (1 << 2),
+			ACTIVITY_LOGIC_COMPONENTS = (1 << 3)
 		} m_flags;
 
 		/// Squared physics culling radius.
@@ -925,8 +927,12 @@ public:
 	static PyObject*	pyattr_get_cullingBox(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef);
 	static PyObject*	pyattr_get_physicsCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef);
 	static int			pyattr_set_physicsCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef, PyObject *value);
+	static PyObject*	pyattr_get_physicsSleepVelocityCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef);
+	static int			pyattr_set_physicsSleepVelocityCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef, PyObject* value);
 	static PyObject*	pyattr_get_logicCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef);
 	static int			pyattr_set_logicCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef, PyObject *value);
+	static PyObject*	pyattr_get_logicComponentsCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef);
+	static int			pyattr_set_logicComponentsCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef, PyObject* value);
 	static PyObject*	pyattr_get_physicsCullingRadius(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef);
 	static int			pyattr_set_physicsCullingRadius(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef, PyObject *value);
 	static PyObject*	pyattr_get_logicCullingRadius(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef);

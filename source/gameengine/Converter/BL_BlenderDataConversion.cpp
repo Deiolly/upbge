@@ -857,10 +857,20 @@ static KX_GameObject::ActivityCullingInfo activityCullingInfoFromBlenderObject(O
 		cullingInfo.m_flags = (KX_GameObject::ActivityCullingInfo::Flag)(
 			cullingInfo.m_flags | KX_GameObject::ActivityCullingInfo::ACTIVITY_PHYSICS);
 	}
+	if (blenderInfo.flags & OB_ACTIVITY_PHYSICS_SLEEPVELOCITY) {
+		// Enable physics only stop culling.
+		cullingInfo.m_flags = (KX_GameObject::ActivityCullingInfo::Flag)(
+			cullingInfo.m_flags | KX_GameObject::ActivityCullingInfo::ACTIVITY_PHYSICS_SLEEPVELOCITY);
+	}
 	if (blenderInfo.flags & OB_ACTIVITY_LOGIC) {
 		// Enable logic culling.
 		cullingInfo.m_flags = (KX_GameObject::ActivityCullingInfo::Flag)(
 			cullingInfo.m_flags | KX_GameObject::ActivityCullingInfo::ACTIVITY_LOGIC);
+	}
+	if (blenderInfo.flags & OB_ACTIVITY_LOGIC_COMPONENTS) {
+		// Enable logic components culling.
+		cullingInfo.m_flags = (KX_GameObject::ActivityCullingInfo::Flag)(
+			cullingInfo.m_flags | KX_GameObject::ActivityCullingInfo::ACTIVITY_LOGIC_COMPONENTS);
 	}
 
 	// Set culling radius.

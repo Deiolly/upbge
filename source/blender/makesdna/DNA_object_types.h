@@ -116,7 +116,9 @@ typedef struct ObjectActivityCulling {
 /* object activity flags */
 enum {
 	OB_ACTIVITY_PHYSICS = (1 << 0),
-	OB_ACTIVITY_LOGIC = (1 << 1),
+	OB_ACTIVITY_PHYSICS_SLEEPVELOCITY = (1 << 1),
+	OB_ACTIVITY_LOGIC = (1 << 2),
+	OB_ACTIVITY_LOGIC_COMPONENTS = (1 << 3)
 };
 
 typedef struct Object {

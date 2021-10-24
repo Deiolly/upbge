@@ -1039,15 +1039,18 @@ class OBJECT_PT_activity_culling(ObjectButtonsPanel, Panel):
 
         col = split.column()
         col.prop(activity, "use_physics", text="Physics")
-        sub = col.column()
+        sub = col.box()
         sub.active = activity.use_physics
         sub.prop(activity, "physics_radius")
+        sub.prop(activity, "sleep_velocity", text="Sleep Velocity")
 
         col = split.column()
         col.prop(activity, "use_logic", text="Logic")
-        sub = col.column()
+        sub = col.box()
         sub.active = activity.use_logic
         sub.prop(activity, "logic_radius")
+        sub = sub.column()
+        sub.prop(activity, "activity_components", text="No Components")
 
 class OBJECT_PT_levels_of_detail(ObjectButtonsPanel, Panel):
     bl_label = "Levels of Detail"

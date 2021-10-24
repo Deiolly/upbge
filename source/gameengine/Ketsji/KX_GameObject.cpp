@@ -839,6 +839,9 @@ void KX_GameObject::UpdateActivity(float distance)
 	// Manage physics culling.
 	if (m_activityCullingInfo.m_flags & ActivityCullingInfo::ACTIVITY_PHYSICS) {
 		if (distance > m_activityCullingInfo.m_physicsRadius) {
+			if ((m_activityCullingInfo.m_flags & ActivityCullingInfo::ACTIVITY_PHYSICS_SLEEPVELOCITY) && m_physicsController->GetLinearVelocity().Length()) {
+				return;
+			}
 			SuspendPhysics(false);
 		}
 		else {
@@ -1606,12 +1609,16 @@ void KX_GameObject::SetComponents(EXP_ListValue<KX_PythonComponent> *components)
 void KX_GameObject::UpdateComponents()
 {
 #ifdef WITH_PYTHON
-	if (!m_components) {
-		return;
-	}
-	if (!m_suspended) {
-		for (KX_PythonComponent* comp : m_components) {
-			comp->Update();
+	if (m_components) {
+		if ((m_activityCullingInfo.m_flags & ActivityCullingInfo::ACTIVITY_LOGIC_COMPONENTS) && (m_activityCullingInfo.m_flags & ActivityCullingInfo::ACTIVITY_LOGIC)) {
+			for (KX_PythonComponent* comp : m_components) {
+				comp->Update();
+			}
+		}
+		else if (!m_suspended) {
+			for (KX_PythonComponent* comp : m_components) {
+				comp->Update();
+			}
 		}
 	}
 
@@ -2020,7 +2027,9 @@ PyAttributeDef KX_GameObject::Attributes[] = {
 	EXP_PYATTRIBUTE_RW_FUNCTION("physicsCullingRadius", KX_GameObject, pyattr_get_physicsCullingRadius, pyattr_set_physicsCullingRadius),
 	EXP_PYATTRIBUTE_RW_FUNCTION("logicCullingRadius", KX_GameObject, pyattr_get_logicCullingRadius, pyattr_set_logicCullingRadius),
 	EXP_PYATTRIBUTE_RW_FUNCTION("physicsCulling", KX_GameObject, pyattr_get_physicsCulling, pyattr_set_physicsCulling),
+	EXP_PYATTRIBUTE_RW_FUNCTION("physicsCullingVelocity", KX_GameObject, pyattr_get_physicsSleepVelocityCulling, pyattr_set_physicsSleepVelocityCulling),
 	EXP_PYATTRIBUTE_RW_FUNCTION("logicCulling", KX_GameObject, pyattr_get_logicCulling, pyattr_set_logicCulling),
+	EXP_PYATTRIBUTE_RW_FUNCTION("logicCullingComponents", KX_GameObject, pyattr_get_logicComponentsCulling, pyattr_set_logicComponentsCulling),
 	EXP_PYATTRIBUTE_RW_FUNCTION("position", KX_GameObject, pyattr_get_worldPosition,    pyattr_set_localPosition),
 	EXP_PYATTRIBUTE_RO_FUNCTION("localInertia", KX_GameObject, pyattr_get_localInertia),
 	EXP_PYATTRIBUTE_RW_FUNCTION("orientation", KX_GameObject, pyattr_get_worldOrientation, pyattr_set_localOrientation),
@@ -2748,11 +2757,30 @@ int KX_GameObject::pyattr_set_physicsCulling(EXP_PyObjectPlus *self_v, const EXP
 	return PY_SET_ATTR_SUCCESS;
 }
 
+PyObject* KX_GameObject::pyattr_get_physicsSleepVelocityCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	return PyBool_FromLong(self->GetActivityCullingInfo().m_flags & ActivityCullingInfo::ACTIVITY_PHYSICS_SLEEPVELOCITY);
+}
+
+int KX_GameObject::pyattr_set_physicsSleepVelocityCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef, PyObject* value)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	int param = PyObject_IsTrue(value);
+	if (param == -1) {
+		PyErr_SetString(PyExc_AttributeError, "gameOb.physicsSleepVelocityCulling = bool: KX_GameObject, expected True or False");
+		return PY_SET_ATTR_FAIL;
+	}
+
+	self->SetActivityCulling(ActivityCullingInfo::ACTIVITY_PHYSICS_SLEEPVELOCITY, param);
+	return PY_SET_ATTR_SUCCESS;
+}
+
 PyObject *KX_GameObject::pyattr_get_logicCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef)
 {
 	KX_GameObject *self = static_cast<KX_GameObject *>(self_v);
 	return PyBool_FromLong(self->GetActivityCullingInfo().m_flags & ActivityCullingInfo::ACTIVITY_LOGIC);
-}
+} 
 
 int KX_GameObject::pyattr_set_logicCulling(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBUTE_DEF *attrdef, PyObject *value)
 {
@@ -2764,6 +2792,25 @@ int KX_GameObject::pyattr_set_logicCulling(EXP_PyObjectPlus *self_v, const EXP_P
 	}
 
 	self->SetActivityCulling(ActivityCullingInfo::ACTIVITY_LOGIC, param);
+	return PY_SET_ATTR_SUCCESS;
+}
+
+PyObject* KX_GameObject::pyattr_get_logicComponentsCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	return PyBool_FromLong(self->GetActivityCullingInfo().m_flags & ActivityCullingInfo::ACTIVITY_LOGIC_COMPONENTS);
+}
+
+int KX_GameObject::pyattr_set_logicComponentsCulling(EXP_PyObjectPlus* self_v, const EXP_PYATTRIBUTE_DEF* attrdef, PyObject* value)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	int param = PyObject_IsTrue(value);
+	if (param == -1) {
+		PyErr_SetString(PyExc_AttributeError, "gameOb.logicComponentsCulling = bool: KX_GameObject, expected True or False");
+		return PY_SET_ATTR_FAIL;
+	}
+
+	self->SetActivityCulling(ActivityCullingInfo::ACTIVITY_LOGIC_COMPONENTS, param);
 	return PY_SET_ATTR_SUCCESS;
 }
 
