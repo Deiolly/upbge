@@ -337,9 +337,9 @@ void KX_ObstacleSimulation::DrawObstacles()
 			const float radius = m_obstacles[i]->m_rad + s-1;
 			const mt::vec3& pos = m_obstacles[i]->m_pos;
 			const float delta = M_PI * 2.0f / SECTORS_NUM;
-			for (unsigned short c = 0; c < SECTORS_NUM; ++c) {
-				const float t1 = delta * c;
-				const float t2 = delta * (c + 1);
+			for (unsigned short i = 0; i < SECTORS_NUM; ++i) {
+				const float t1 = delta * i;
+				const float t2 = delta * (i + 1);
 				const mt::vec3 p1 = mt::vec3(cosf(t1), sinf(t1), 0.0f) * radius + pos;
 				const mt::vec3 p2 = mt::vec3(cosf(t2), sinf(t2), 0.0f) * radius + pos;
 				KX_RasterizerDrawDebugLine(p1, p2, bluecolor);
