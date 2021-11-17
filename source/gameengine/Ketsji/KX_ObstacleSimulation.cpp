@@ -66,7 +66,6 @@ static int sweepCircleCircle(const mt::vec2 &pos0, const float r0, const mt::vec
 	float a = v.LengthSquared();
 	if (a < EPS) {
 		return 0;           // not moving
-
 	}
 	// Overlap, calc time to exit.
 	float b = mt::dot(v, s);
@@ -334,12 +333,13 @@ void KX_ObstacleSimulation::DrawObstacles()
 			KX_RasterizerDrawDebugLine(p1, p2, bluecolor);
 		}
 		else if (m_obstacles[i]->m_shape == KX_OBSTACLE_CIRCLE) {
-			const float radius = m_obstacles[i]->m_rad;
+			const float s = (m_obstacles[i]->m_gameObj->NodeGetWorldScaling().xy().Length());
+			const float radius = m_obstacles[i]->m_rad + s-1;
 			const mt::vec3& pos = m_obstacles[i]->m_pos;
 			const float delta = M_PI * 2.0f / SECTORS_NUM;
-			for (unsigned short i = 0; i < SECTORS_NUM; ++i) {
-				const float t1 = delta * i;
-				const float t2 = delta * (i + 1);
+			for (unsigned short c = 0; c < SECTORS_NUM; ++c) {
+				const float t1 = delta * c;
+				const float t2 = delta * (c + 1);
 				const mt::vec3 p1 = mt::vec3(cosf(t1), sinf(t1), 0.0f) * radius + pos;
 				const mt::vec3 p2 = mt::vec3(cosf(t2), sinf(t2), 0.0f) * radius + pos;
 				KX_RasterizerDrawDebugLine(p1, p2, bluecolor);
@@ -498,7 +498,6 @@ void KX_ObstacleSimulationTOI_rays::sampleRVO(KX_Obstacle *activeObst, KX_NavMes
 			}
 
 			float htmin, htmax;
-
 			if (ob->m_shape == KX_OBSTACLE_CIRCLE) {
 				mt::vec2 vab;
 				if (ob->vel.Length() < 0.01f * 0.01f) {
@@ -509,9 +508,9 @@ void KX_ObstacleSimulationTOI_rays::sampleRVO(KX_Obstacle *activeObst, KX_NavMes
 					// Moving, use RVO
 					vab = (2.0f * svel) - vel - mt::vec2(ob->vel);
 				}
-
+				const float s = ob->m_gameObj->NodeGetWorldScaling().xy().Length();
 				if (!sweepCircleCircle(activeObst->m_pos.xy(), activeObst->m_rad,
-				                       vab, ob->m_pos.xy(), ob->m_rad, htmin, htmax)) {
+				                       vab, ob->m_pos.xy(), ob->m_rad + s - 1, htmin, htmax)) {
 					continue;
 				}
 			}
@@ -656,9 +655,9 @@ static void processSamples(KX_Obstacle *activeObst, KX_NavMeshObject *activeNavM
 				side += clamp(std::min(mt::dot(dp, vab),
 				                       mt::dot(np, vab)) * 2.0f, 0.0f, 1.0f);
 				nside++;
-
+				const float s = ob->m_gameObj->NodeGetWorldScaling().xy().Length();
 				if (!sweepCircleCircle(activeObst->m_pos.xy(), activeObst->m_rad,
-				                       mt::vec2(vab), ob->m_pos.xy(), ob->m_rad, htmin, htmax)) {
+				                       mt::vec2(vab), ob->m_pos.xy(), ob->m_rad + s - 1, htmin, htmax)) {
 					continue;
 				}
 
