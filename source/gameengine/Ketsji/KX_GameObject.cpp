@@ -2013,6 +2013,7 @@ PyAttributeDef KX_GameObject::Attributes[] = {
 	EXP_PYATTRIBUTE_RO_FUNCTION("scene",        KX_GameObject, pyattr_get_scene),
 	EXP_PYATTRIBUTE_RO_FUNCTION("life",     KX_GameObject, pyattr_get_life),
 	EXP_PYATTRIBUTE_RW_FUNCTION("mass",     KX_GameObject, pyattr_get_mass,     pyattr_set_mass),
+	EXP_PYATTRIBUTE_RW_FUNCTION("friction", KX_GameObject, pyattr_get_friction, pyattr_set_friction),
 	EXP_PYATTRIBUTE_RO_FUNCTION("isSuspendDynamics",        KX_GameObject, pyattr_get_is_suspend_dynamics),
 	EXP_PYATTRIBUTE_RW_FUNCTION("linVelocityMin",       KX_GameObject, pyattr_get_lin_vel_min, pyattr_set_lin_vel_min),
 	EXP_PYATTRIBUTE_RW_FUNCTION("linVelocityMax",       KX_GameObject, pyattr_get_lin_vel_max, pyattr_set_lin_vel_max),
@@ -2563,6 +2564,33 @@ int KX_GameObject::pyattr_set_mass(EXP_PyObjectPlus *self_v, const EXP_PYATTRIBU
 	if (spc) {
 		spc->SetMass(val);
 	}
+
+	return PY_SET_ATTR_SUCCESS;
+}
+
+PyObject* KX_GameObject::pyattr_get_friction(EXP_PyObjectPlus* self_v,
+	const EXP_PYATTRIBUTE_DEF* attrdef)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	PHY_IPhysicsController* spc = self->GetPhysicsController();
+	return PyFloat_FromDouble(spc ? spc->GetFriction() : 0.0f);
+}
+
+int KX_GameObject::pyattr_set_friction(EXP_PyObjectPlus* self_v,
+	const EXP_PYATTRIBUTE_DEF* attrdef,
+	PyObject* value)
+{
+	KX_GameObject* self = static_cast<KX_GameObject*>(self_v);
+	PHY_IPhysicsController* spc = self->GetPhysicsController();
+	float val = PyFloat_AsDouble(value);
+	if (val < 0.0f) { /* also accounts for non float */
+		PyErr_SetString(PyExc_AttributeError,
+			"gameOb.friction = float: KX_GameObject, expected a float zero or above");
+		return PY_SET_ATTR_FAIL;
+	}
+
+	if (spc)
+		spc->SetFriction(val);
 
 	return PY_SET_ATTR_SUCCESS;
 }

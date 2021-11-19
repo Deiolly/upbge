@@ -599,6 +599,7 @@ protected:
 	short m_savedCollisionFilterGroup;
 	short m_savedCollisionFilterMask;
 	float m_savedMass;
+	float m_savedFriction;
 	bool m_savedDyna;
 	bool m_suspended;
 
@@ -710,6 +711,9 @@ public:
 
 	virtual float GetMass();
 	virtual void SetMass(float newmass);
+
+	virtual float GetFriction();
+	virtual void SetFriction(float newfriction);
 
 	float GetInertiaFactor() const;
 

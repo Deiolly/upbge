@@ -214,7 +214,7 @@ public:
 
 	bool RemoveCcdPhysicsController(CcdPhysicsController *ctrl, bool freeConstraints);
 
-	void UpdateCcdPhysicsController(CcdPhysicsController *ctrl, btScalar newMass, int newCollisionFlags, short int newCollisionGroup, short int newCollisionMask);
+	void UpdateCcdPhysicsController(CcdPhysicsController *ctrl, btScalar newMass, float newFriction, int newCollisionFlags, short int newCollisionGroup, short int newCollisionMask);
 
 	void RefreshCcdPhysicsController(CcdPhysicsController *ctrl);
 

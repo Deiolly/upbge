@@ -616,7 +616,7 @@ bool CcdPhysicsEnvironment::RemoveCcdPhysicsController(CcdPhysicsController *ctr
 	return true;
 }
 
-void CcdPhysicsEnvironment::UpdateCcdPhysicsController(CcdPhysicsController *ctrl, btScalar newMass, int newCollisionFlags, short int newCollisionGroup, short int newCollisionMask)
+void CcdPhysicsEnvironment::UpdateCcdPhysicsController(CcdPhysicsController *ctrl, btScalar newMass, float newFriction, int newCollisionFlags, short int newCollisionGroup, short int newCollisionMask)
 {
 	// this function is used when the collisionning group of a controller is changed
 	// remove and add the collistioning object
@@ -630,6 +630,7 @@ void CcdPhysicsEnvironment::UpdateCcdPhysicsController(CcdPhysicsController *ctr
 		if (body) {
 			if (newMass) {
 				body->getCollisionShape()->calculateLocalInertia(newMass, inertia);
+				body->setFriction(newFriction);
 			}
 			body->setMassProps(newMass, inertia * ctrl->GetInertiaFactor());
 			m_dynamicsWorld->addRigidBody(body, newCollisionGroup, newCollisionMask);

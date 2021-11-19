@@ -79,6 +79,8 @@ public:
 
 	virtual float GetMass() = 0;
 	virtual void SetMass(float newmass) = 0;
+	virtual float GetFriction() = 0;
+	virtual void SetFriction(float newmass) = 0;
 
 	// physics methods
 	virtual void ApplyImpulse(const mt::vec3& attach, const mt::vec3& impulse, bool local) = 0;
