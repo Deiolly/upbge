@@ -1174,10 +1174,8 @@ float CcdPhysicsController::GetFriction()
 		std::cout << "friction is only available for rigid bodies and dynamic objects" << std::endl;
 	}
 
-	float friction = 0.0f;
 	if (GetRigidBody()) {
-		friction = GetRigidBody()->getFriction();
-		return friction;
+		return GetRigidBody()->getFriction(); // return Friction value
 	}
 	return 0.0f;
 }
