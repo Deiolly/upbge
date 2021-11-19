@@ -75,6 +75,16 @@ base class --- :class:`SCA_IObject`
       .. note::
 
          The object must have a physics controller for the mass to be applied, otherwise the mass value will be returned as 0.0.
+         
+  .. attribute:: friction
+
+     The object's friction
+
+  :type: float
+
+  .. note::
+
+     The object must have a physics controller for the friction to be applied, otherwise the friction value will be returned as 0.0.
 
    .. attribute:: isSuspendDynamics
 
