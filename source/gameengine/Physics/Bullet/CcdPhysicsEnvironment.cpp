@@ -3297,7 +3297,7 @@ mt::vec3 CcdCollData::GetWorldPoint(unsigned int index, bool first) const
 mt::vec3 CcdCollData::GetNormal(unsigned int index, bool first) const
 {
 	const btManifoldPoint& point = m_manifoldPoint->getContactPoint(index);
-	return ToMt(first ? -point.m_normalWorldOnB : point.m_normalWorldOnB);
+	return ToMt(first ? point.m_normalWorldOnB : -point.m_normalWorldOnB);
 }
 
 float CcdCollData::GetCombinedFriction(unsigned int index, bool first) const
