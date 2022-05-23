@@ -1025,7 +1025,10 @@ EXP_PYMETHODDEF_DOC_VARARGS(KX_Camera, getScreenRay,
 		spc = parent->GetPhysicsController();
 	}
 
-	RayCastData rayData("", false, (1u << OB_MAX_COL_MASKS) - 1);
+	// RayCastData rayData("", false, (1u << OB_MAX_COL_MASKS) - 1);
+	std::string prop = propName ? (std::string)propName : "";
+	RayCastData rayData(prop, false, (1u << OB_MAX_COL_MASKS) - 1);
+
 	KX_RayCast::Callback<KX_Camera, RayCastData> callback(this, spc, &rayData);
 	if (KX_RayCast::RayTest(pe, fromPoint, toPoint, callback) && rayData.m_hitObject) {
 		return rayData.m_hitObject->GetProxy();
