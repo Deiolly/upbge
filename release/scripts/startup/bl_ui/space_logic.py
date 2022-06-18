@@ -24,6 +24,7 @@ class LOGIC_PT_components(bpy.types.Panel):
     bl_space_type = 'LOGIC_EDITOR'
     bl_region_type = 'UI'
     bl_label = 'Components'
+
     @classmethod
     def poll(cls, context):
         ob = context.active_object
@@ -60,27 +61,43 @@ class LOGIC_PT_components(bpy.types.Panel):
             row.operator("logic.python_component_move_down", icon="TRIA_DOWN", text="").index = i
             row = row.row(align=0)
             row.operator("logic.python_component_remove", text="", icon='X').index = i
+            lastHeader = None
+
+            if len(c.properties) == 1 and c.properties[0].name == "C_Icons": continue
             if c.show_expanded and len(c.properties) > 0:
-                box = box.box()
+                box = box.box().column()
                 iconval = 1
                 for prop in c.properties:
                     row = box.row()
+                    if prop.name[:8] == "C_Header":
+                        row = row.box()
+                        icon="FULLSCREEN"
+                        split=prop.name.split("/")
+                        if len(split) > 1: icon=split[1]
+                        
+                        row.label(text=prop.value, icon=icon)
+                        lastHeader = row.column()
+                        continue
+                    
                     if prop.name == "C_Icons":
                         if type(prop.value) != type(str()):
                             print("warning: {} in 'C_Icons' Must be STRING! like that ('C_Icons','BLENDER+QUESTION')".format(c.name))
                         continue
+                    text=prop.name
+                    if lastHeader: row = lastHeader.row(); text = "- {}".format(text)
+                    
                     try:
                         if "C_Icons" in c.properties:
-                            row.label(text=prop.name, icon=icondict[iconval])
+                            row.label(text=text, icon=icondict[iconval])
                             iconval += 1
                             col = row.column()
                             col.prop(prop, "value", text="")
                         else:
-                            row.label(text=prop.name)
+                            row.label(text=text)
                             col = row.column()
                             col.prop(prop, "value", text="")
                     except:
-                        row.label(text=prop.name)
+                        row.label(text=text)
                         col = row.column()
                         col.prop(prop, "value", text="")
 
